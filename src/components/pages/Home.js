@@ -28,7 +28,7 @@ const Home = () => {
 
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get(`${apiUrl}/api/v1/category/get-category`);
+      const { data } = await axios.get(`${apiUrl}/category/get-category`);
       if (data?.success) setCategories(data.category);
     } catch (error) {
       console.log(error);
@@ -37,7 +37,7 @@ const Home = () => {
 
   const getTotal = async () => {
     try {
-      const { data } = await axios.get(`${apiUrl}/api/v1/product/product-count`);
+      const { data } = await axios.get(`${apiUrl}/product/product-count`);
       setTotal(data?.total);
     } catch (error) {
       console.log(error);
@@ -52,7 +52,7 @@ const Home = () => {
   const loadMore = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(`${apiUrl}/api/v1/product/product-list/${page}`);
+      const { data } = await axios.get(`${apiUrl}/product/product-list/${page}`);
       setLoading(false);
       setProducts((prev) => [...prev, ...data?.products]);
     } catch (error) {
@@ -75,7 +75,7 @@ const Home = () => {
   const getAllProduct = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(`${apiUrl}/api/v1/product/product-list/${page}`);
+      const { data } = await axios.get(`${apiUrl}/product/product-list/${page}`);
       setLoading(false);
       setProducts(data.products);
     } catch (error) {
@@ -86,7 +86,7 @@ const Home = () => {
 
   const filterProduct = async () => {
     try {
-      const { data } = await axios.post(`${apiUrl}/api/v1/product/product-filter`, {
+      const { data } = await axios.post(`${apiUrl}/product/product-filter`, {
         checked,
         radio,
       });
@@ -155,7 +155,7 @@ const Home = () => {
                 <div className="col-lg-4 col-md-6" key={p._id}>
                   <div className="card border-0 shadow-sm rounded-4 h-100 product-card">
                     <img
-                      src={`${apiUrl}/api/v1/product/get-image/${p._id}`}
+                      src={`${apiUrl}/product/get-image/${p._id}`}
                       alt={p.name}
                       className="card-img-top rounded-top-4"
                       style={{ height: "220px", objectFit: "cover" }}

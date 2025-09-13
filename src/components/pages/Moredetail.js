@@ -15,7 +15,7 @@ const ProductDetail = () => {
   // Fetch single product
   const detailProduct = async () => {
     try {
-      const { data } = await axios.get(`${apiUrl}/api/v1/product/get-singleproduct/${slug}`);
+      const { data } = await axios.get(`${apiUrl}/product/get-singleproduct/${slug}`);
       if (data.success) setProduct(data.product);
     } catch (error) {
       console.error("Error fetching product:", error);
@@ -45,7 +45,7 @@ const ProductDetail = () => {
           <div className="col-lg-6 text-center">
             <div className="border rounded-4 p-4 shadow-lg bg-white">
               <img
-                src={`${apiUrl}/api/v1/product/get-image/${product._id}`}
+                src={`${apiUrl}/product/get-image/${product._id}`}
                 alt={product.name}
                 className="img-fluid rounded-3"
                 style={{ maxHeight: "400px", objectFit: "contain" }}

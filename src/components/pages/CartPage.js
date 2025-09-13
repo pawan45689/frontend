@@ -36,7 +36,7 @@ const CartPage = () => {
   // Fetch Braintree client token
   const getToken = async () => {
     try {
-      const { data } = await axios.get(`${apiUrl}/api/v1/product/braintree/token`);
+      const { data } = await axios.get(`${apiUrl}/product/braintree/token`);
       setClientToken(data.clientToken);
     } catch (error) {
       console.error("Error fetching Braintree token:", error);
@@ -56,7 +56,7 @@ const CartPage = () => {
     try {
       setLoading(true);
       const { nonce } = await instance.requestPaymentMethod();
-      const { data } = await axios.post( `${apiUrl}/api/v1/product/braintree/payment`, {
+      const { data } = await axios.post( `${apiUrl}/product/braintree/payment`, {
         nonce,
         cart,
       });
@@ -109,7 +109,7 @@ const CartPage = () => {
                   {/* Product Image */}
                   <div className="col-md-3">
                     <img
-                      src={`${apiUrl}/api/v1/product/get-image/${p._id}`}
+                      src={`${apiUrl}/product/get-image/${p._id}`}
                       className="img-fluid rounded-start"
                       alt={p.name}
                       style={{ height: "120px", objectFit: "cover" }}
