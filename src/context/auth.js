@@ -1,36 +1,42 @@
-import { useState,useEffect,useContext,createContext } from "react";
+import { useState, useEffect, useContext, createContext } from "react";
 import axios from "axios";
 
 const AuthContext = createContext();
-const AuthProvider = ({children})=>{
-    const [auth,setAuth]=useState({
-        user:null,
-        token:"",
-    });
 
-    //Default axios
-    axios.defaults.headers.common['Authorization']= auth?.token;
+const AuthProvider = ({ children }) => {
+  const [auth, setAuth] = useState({
+    user: null,
+    token: "",
+  });
 
-    useEffect(()=>{
-        const data = localStorage.getItem('auth');
-        if(data){
-            const parseData = JSON.parse(data);
-            setAuth({
-                ...auth,
-                user:parseData.user,
-                token:parseData.token,
-            });
-        }
-        //eslint-disable-next-line
-    },[]);
-    return(
-        <AuthContext.Provider value={[auth,setAuth]}>
-            {children}
-        </AuthContext.Provider>
-    );
-    };
-//Custom hook
+  // Load from localStorage
+  useEffect(() => {
+    const data = localStorage.getItem("auth");
+    if (data) {
+      const parsed = JSON.parse(data);
+      setAuth({
+        user: parsed.user,
+        token: parsed.token,
+      });
+    }
+  }, []);
 
-const useAuth = ()=> useContext(AuthContext);
+  // Update axios header when token changes
+  useEffect(() => {
+    if (auth?.token) {
+      axios.defaults.headers.common["Authorization"] = auth.token;
+    } else {
+      delete axios.defaults.headers.common["Authorization"];
+    }
+  }, [auth?.token]);
 
-export {useAuth,AuthProvider};
+  return (
+    <AuthContext.Provider value={[auth, setAuth]}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+const useAuth = () => useContext(AuthContext);
+
+export { useAuth, AuthProvider };
