@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/auth";
 import "../css/login.css";
-
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -16,7 +16,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("/api/v1/auth/login", { email, password });
+      const res = await axios.post(`${apiUrl}/auth/login`, { email, password });
       if (res.data.user && res.data.token) {
         toast.success(res.data && res.data.message);
         setAuth({
