@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { Select } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
-
+const apiUrl = process.env.REACT_APP_API_URL;
 const { Option } = Select;
 
 const UpdateProduct = () => {
@@ -25,7 +25,7 @@ const UpdateProduct = () => {
   const getSingleProduct = async () => {
     try {
       const { data } = await axios.get(
-        `/api/v1/product/get-singleproduct/${params.slug}`
+        `${apiUrl}/product/get-singleproduct/${params.slug}`
       );
       if (data?.success) {
         setId(data.product._id);
@@ -48,7 +48,7 @@ const UpdateProduct = () => {
   // Fetch categories
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get(`/api/v1/category/get-category`);
+      const { data } = await axios.get(`${apiUrl}/category/get-category`);
       if (data?.success) setCategories(data.category);
     } catch (error) {
       toast.error("Failed to load categories");
@@ -73,7 +73,7 @@ const UpdateProduct = () => {
       productData.append("shipping", shipping);
 
       const { data } = await axios.put(
-        `/api/v1/product/update-product/${id}`,
+        `${apiUrl}/product/update-product/${id}`,
         productData
       );
 
@@ -93,7 +93,7 @@ const UpdateProduct = () => {
   const handleDelete = async () => {
     try {
       if (!window.confirm("Are you sure you want to delete this product?")) return;
-      const { data } = await axios.delete(`/api/v1/product/delete-product/${id}`);
+      const { data } = await axios.delete(`${apiUrl}/product/delete-product/${id}`);
       if (data?.success) {
         toast.success("Product deleted successfully");
         navigate("/dashboard/admin/product");
@@ -159,7 +159,7 @@ const UpdateProduct = () => {
                 {image || id ? (
                   <div className="mb-3 text-center">
                     <img
-                      src={image ? URL.createObjectURL(image) : `/api/v1/product/get-image/${id}`}
+                      src={image ? URL.createObjectURL(image) : `${apiUrl}/product/get-image/${id}`}
                       alt="Preview"
                       className="img-fluid rounded shadow-sm"
                       style={{ maxHeight: "200px" }}

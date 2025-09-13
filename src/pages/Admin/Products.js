@@ -4,13 +4,13 @@ import AdminMenu from "../../components/layouts/AdminMenu";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
-
+const apiUrl = process.env.REACT_APP_API_URL;
 const Product = () => {
   const [products, setProducts] = useState([]);
 
   const getAllProducts = async () => {
     try {
-      const { data } = await axios.get("/api/v1/product/get-product");
+      const { data } = await axios.get(`${apiUrl}/product/get-product`);
       if (data?.success) setProducts(data.products);
     } catch (error) {
       toast.error("Error fetching products");
@@ -43,7 +43,7 @@ const Product = () => {
                     >
                       <div className="card h-100 shadow-sm rounded-3 hover-shadow transition">
                         <img
-                          src={`/api/v1/product/get-image/${product._id}`}
+                          src={`${apiUrl}/product/get-image/${product._id}`}
                           alt={product.name}
                           className="card-img-top rounded-top"
                           style={{ height: "200px", objectFit: "cover" }}

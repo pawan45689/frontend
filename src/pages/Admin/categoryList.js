@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { Modal } from "antd";
 import CategoryForm from "../../components/form/categoryForm";
 import { useNavigate } from "react-router-dom";
-
+const apiUrl = process.env.REACT_APP_API_URL;
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
   const [visible, setVisible] = useState(false);
@@ -16,7 +16,7 @@ const CategoryList = () => {
 
   const getAllCategories = async () => {
     try {
-      const { data } = await axios.get("/api/v1/category/get-category");
+      const { data } = await axios.get(`${apiUrl}/category/get-category`);
       if (data.success) setCategories(data.category);
     } catch (error) {
       toast.error("Error fetching categories");
@@ -29,7 +29,7 @@ const CategoryList = () => {
 
   const handleDelete = async (id) => {
     try {
-      const { data } = await axios.delete(`/api/v1/category/delete-category/${id}`);
+      const { data } = await axios.delete(`${apiUrl}/category/delete-category/${id}`);
       if (data.success) {
         toast.success("Category deleted");
         getAllCategories();
@@ -42,7 +42,7 @@ const CategoryList = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.put(`/api/v1/category/update-category/${selected._id}`, {
+      const { data } = await axios.put(`${apiUrl}/category/update-category/${selected._id}`, {
         name: updatedName,
       });
       if (data.success) {
