@@ -8,22 +8,35 @@ const apiUrl = process.env.REACT_APP_API_URL;
 const CreateCategory = () => {
   const [name, setName] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!name) return toast.error("Category name cannot be empty");
+  cconst handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!name) return toast.error("Category name cannot be empty");
 
-    try {
-      const { data } = await axios.post(`${apiUrl}/category/create-category`, { name });
-      if (data.success) {
-        toast.success(`${name} created successfully`);
-        setName("");
-      } else {
-        toast.error(data.message);
+  try {
+    const auth = JSON.parse(localStorage.getItem("auth"));
+    const token = auth?.token;
+
+    const { data } = await axios.post(
+      `${apiUrl}/category/create-category`,
+      { name },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ required
+        },
       }
-    } catch (error) {
-      toast.error("Error creating category");
+    );
+
+    if (data.success) {
+      toast.success(`${name} created successfully`);
+      setName("");
+    } else {
+      toast.error(data.message);
     }
-  };
+  } catch (error) {
+    toast.error("Error creating category");
+  }
+};
+
 
   return (
     <Layout title="Create Category">

@@ -37,32 +37,44 @@ const CreateProducts = () => {
   }, []);
 
   const handleCreate = async (e) => {
-    e.preventDefault();
-    try {
-      const productData = new FormData();
-      productData.append("name", name);
-      productData.append("description", description);
-      productData.append("price", price);
-      productData.append("category", category);
-      productData.append("quantity", quantity);
-      productData.append("image", image);
-      productData.append("shipping", shipping);
+  e.preventDefault();
+  try {
+    const productData = new FormData();
+    productData.append("name", name);
+    productData.append("description", description);
+    productData.append("price", price);
+    productData.append("category", category);
+    productData.append("quantity", quantity);
+    productData.append("image", image);
+    productData.append("shipping", shipping);
 
-      const { data } = await axios.post(
-        `${apiUrl}/product/create-product`,
-        productData
-      );
-      if (data?.error) {
-        toast.error(data.message);
-      } else {
-        toast.success("Product created successfully");
-        navigate("/dashboard/admin/product");
+    // ✅ Get token from localStorage (or AuthContext)
+    const auth = JSON.parse(localStorage.getItem("auth"));
+    const token = auth?.token;
+
+    const { data } = await axios.post(
+      `${apiUrl}/product/create-product`,
+      productData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,  // ✅ send token
+          "Content-Type": "multipart/form-data",
+        },
       }
-    } catch (error) {
-      console.error(error);
-      toast.error("Error creating product");
+    );
+
+    if (data?.error) {
+      toast.error(data.message);
+    } else {
+      toast.success("Product created successfully");
+      navigate("/dashboard/admin/product");
     }
-  };
+  } catch (error) {
+    console.error(error);
+    toast.error("Error creating product");
+  }
+};
+
 
   return (
     <Layout>
