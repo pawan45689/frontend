@@ -9,43 +9,50 @@ const CreateCategory = () => {
   const [name, setName] = useState("");
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!name) return toast.error("Category name cannot be empty");
+    e.preventDefault();
+    if (!name) return toast.error("Category name cannot be empty");
 
-  try {
-    const auth = JSON.parse(localStorage.getItem("auth"));
-    const token = auth?.token;
+    try {
+      const auth = JSON.parse(localStorage.getItem("auth"));
+      const token = auth?.token;
 
-    const { data } = await axios.post(
-      `${apiUrl}/category/create-category`,
-      { name },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`, // ✅ required
-        },
+      const { data } = await axios.post(
+        `${apiUrl}/category/create-category`,
+        { name },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // ✅ required
+          },
+        }
+      );
+
+      if (data.success) {
+        toast.success(`${name} created successfully`);
+        setName("");
+      } else {
+        toast.error(data.message);
       }
-    );
-
-    if (data.success) {
-      toast.success(`${name} created successfully`);
-      setName("");
-    } else {
-      toast.error(data.message);
+    } catch (error) {
+      toast.error("Error creating category");
     }
-  } catch (error) {
-    toast.error("Error creating category");
-  }
-};
-
+  };
 
   return (
     <Layout title="Create Category">
       <div className="container mt-5">
         <div className="row">
-          <div className="col-md-3"><AdminMenu /></div>
+          <div className="col-md-3">
+            <AdminMenu />
+          </div>
           <div className="col-md-9">
-            <h2 className="text-center text-primary mb-4">Create New Category</h2>
-            <CategoryForm value={name} setValue={setName} handleSubmit={handleSubmit} />
+            <h2 className="text-center text-primary mb-4">
+              Create New Category
+            </h2>
+            <CategoryForm
+              value={name}
+              setValue={setName}
+              handleSubmit={handleSubmit}
+            />
           </div>
         </div>
       </div>

@@ -28,13 +28,27 @@ const CategoryList = () => {
   }, []);
 
   const handleDelete = async (id) => {
+    const auth = JSON.parse(localStorage.getItem("auth"));
+    const token = auth?.token;
+
     try {
-      const { data } = await axios.delete(`${apiUrl}/category/delete-category/${id}`);
+      const { data } = await axios.delete(
+        `${apiUrl}/category/delete-category/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // ✅ now inside axios call
+          },
+        }
+      );
+
       if (data.success) {
         toast.success("Category deleted");
         getAllCategories();
+      } else {
+        toast.error(data.message || "Failed to delete category");
       }
-    } catch {
+    } catch (error) {
+      console.error(error);
       toast.error("Error deleting category");
     }
   };
@@ -42,15 +56,28 @@ const CategoryList = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.put(`${apiUrl}/category/update-category/${selected._id}`, {
-        name: updatedName,
-      });
+      const auth = JSON.parse(localStorage.getItem("auth"));
+      const token = auth?.token;
+
+      const { data } = await axios.put(
+        `${apiUrl}/category/update-category/${selected._id}`,
+        { name: updatedName },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // ✅ important
+          },
+        }
+      );
+
       if (data.success) {
         toast.success("Category updated");
         setVisible(false);
         getAllCategories();
+      } else {
+        toast.error(data.message || "Update failed");
       }
-    } catch {
+    } catch (error) {
+      console.error(error);
       toast.error("Error updating category");
     }
   };

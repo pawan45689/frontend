@@ -72,19 +72,29 @@ const UpdateProduct = () => {
       productData.append("category", category);
       productData.append("shipping", shipping);
 
+      // get token from localStorage
+      const auth = JSON.parse(localStorage.getItem("auth"));
+      const token = auth?.token;
+
       const { data } = await axios.put(
         `${apiUrl}/product/update-product/${id}`,
-        productData
+        productData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // ✅ required
+            "Content-Type": "multipart/form-data", // ✅ important for FormData
+          },
+        }
       );
 
       if (data?.success) {
         toast.success("Product updated successfully");
         navigate("/dashboard/admin/product");
-
       } else {
         toast.error("Failed to update product");
       }
     } catch (error) {
+      console.error(error);
       toast.error("Error updating product");
     }
   };
@@ -92,16 +102,29 @@ const UpdateProduct = () => {
   // Delete product
   const handleDelete = async () => {
     try {
-      if (!window.confirm("Are you sure you want to delete this product?")) return;
-      const { data } = await axios.delete(`${apiUrl}/product/delete-product/${id}`);
+      if (!window.confirm("Are you sure you want to delete this product?"))
+        return;
+
+      const auth = JSON.parse(localStorage.getItem("auth"));
+      const token = auth?.token;
+
+      const { data } = await axios.delete(
+        `${apiUrl}/product/delete-product/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // ✅ required
+          },
+        }
+      );
+
       if (data?.success) {
         toast.success("Product deleted successfully");
         navigate("/dashboard/admin/product");
-
       } else {
         toast.error("Failed to delete product");
       }
     } catch (error) {
+      console.error(error);
       toast.error("Error deleting product");
     }
   };
@@ -138,11 +161,15 @@ const UpdateProduct = () => {
 
                 {/* Image Upload */}
                 <div className="mb-3">
-                  <label className="fw-semibold mb-2 d-block">Product Image</label>
+                  <label className="fw-semibold mb-2 d-block">
+                    Product Image
+                  </label>
                   <div
                     className="d-flex justify-content-center align-items-center border border-dashed rounded p-4 bg-light text-center cursor-pointer"
                     style={{ minHeight: "120px" }}
-                    onClick={() => document.getElementById("product-image-input").click()}
+                    onClick={() =>
+                      document.getElementById("product-image-input").click()
+                    }
                   >
                     {image ? image.name : "Click to Upload Image"}
                     <input
@@ -159,7 +186,11 @@ const UpdateProduct = () => {
                 {image || id ? (
                   <div className="mb-3 text-center">
                     <img
-                      src={image ? URL.createObjectURL(image) : `${apiUrl}/product/get-image/${id}`}
+                      src={
+                        image
+                          ? URL.createObjectURL(image)
+                          : `${apiUrl}/product/get-image/${id}`
+                      }
                       alt="Preview"
                       className="img-fluid rounded shadow-sm"
                       style={{ maxHeight: "200px" }}
@@ -230,10 +261,17 @@ const UpdateProduct = () => {
 
                 {/* Buttons */}
                 <div className="d-flex justify-content-between gap-3">
-                  <button type="submit" className="btn btn-gradient-primary w-50">
+                  <button
+                    type="submit"
+                    className="btn btn-gradient-primary w-50"
+                  >
                     Update Product
                   </button>
-                  <button type="button" onClick={handleDelete} className="btn btn-danger w-50">
+                  <button
+                    type="button"
+                    onClick={handleDelete}
+                    className="btn btn-danger w-50"
+                  >
                     Delete Product
                   </button>
                 </div>
