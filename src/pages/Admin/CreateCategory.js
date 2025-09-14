@@ -8,7 +8,7 @@ const apiUrl = process.env.REACT_APP_API_URL;
 const CreateCategory = () => {
   const [name, setName] = useState("");
 
-  cconst handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
   e.preventDefault();
   if (!name) return toast.error("Category name cannot be empty");
 
