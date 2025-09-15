@@ -8,7 +8,10 @@ import banner from "../image/banner.webp";
 import toast from "react-hot-toast";
 import price from "../price/Price.js";
 import Layout from "../layouts/Layout";
+import '../css/home.css';
+
 const apiUrl = process.env.REACT_APP_API_URL;
+
 const Home = () => {
   const navigate = useNavigate();
   const [cart, setCart] = useCart();
@@ -24,6 +27,7 @@ const Home = () => {
   useEffect(() => {
     getAllCategory();
     getTotal();
+    getAllProduct();
   }, []);
 
   const getAllCategory = async () => {
@@ -52,7 +56,9 @@ const Home = () => {
   const loadMore = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(`${apiUrl}/product/product-list/${page}`);
+      const { data } = await axios.get(
+        `${apiUrl}/product/product-list/${page}`
+      );
       setLoading(false);
       setProducts((prev) => [...prev, ...data?.products]);
     } catch (error) {
@@ -70,12 +76,15 @@ const Home = () => {
 
   useEffect(() => {
     if (!checked.length && !radio.length) getAllProduct();
+    else filterProduct();
   }, [checked, radio]);
 
   const getAllProduct = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(`${apiUrl}/product/product-list/${page}`);
+      const { data } = await axios.get(
+        `${apiUrl}/product/product-list/${page}`
+      );
       setLoading(false);
       setProducts(data.products);
     } catch (error) {
@@ -96,20 +105,20 @@ const Home = () => {
     }
   };
 
-  useEffect(() => {
-    if (checked.length || radio.length) filterProduct();
-  }, [checked, radio]);
-
   return (
     <Layout title={"E-Commerce Home Page"}>
       {/* Banner */}
-      <div className="container-fluid mt-3">
+      <div className="relative">
         <img
           src={banner}
           alt="Banner"
-          className="w-100 rounded-4 shadow"
-          style={{ maxHeight: "350px", objectFit: "cover" }}
+          className="w-100 rounded-4 shadow-lg"
+          style={{ maxHeight: "380px", objectFit: "cover" }}
         />
+        <div className="position-absolute top-50 start-50 translate-middle text-center text-white">
+          <h1 className="fw-bold display-4 shadow-text">Shop the Best Deals</h1>
+          <p className="lead">Find premium products at unbeatable prices</p>
+        </div>
       </div>
 
       {/* Main Section */}
@@ -117,29 +126,43 @@ const Home = () => {
         <div className="row g-4">
           {/* Sidebar - Filters */}
           <div className="col-lg-3 col-md-4">
-            <div className="bg-white p-4 rounded-4 shadow-sm sticky-top" style={{ top: "90px" }}>
-              <h5 className="text-primary fw-bold mb-3">Filter by Category</h5>
-              {categories.map((c) => (
-                <Checkbox
-                  key={c._id}
-                  onChange={(e) => handleFilter(e.target.checked, c._id)}
-                  className="d-block mb-2 text-secondary"
-                >
-                  {c.name}
-                </Checkbox>
-              ))}
-
-              <h5 className="text-primary fw-bold mt-4 mb-3">Filter by Price</h5>
-              <Radio.Group onChange={(e) => setRadio(e.target.value)} className="d-flex flex-column">
-                {price.map((p) => (
-                  <Radio key={p._id} value={p.array} className="mb-2 text-secondary">
-                    {p.name}
-                  </Radio>
+            <div
+              className="bg-white bg-opacity-75 backdrop-blur p-4 rounded-4 shadow sticky-top filter-section"
+              style={{ top: "90px" }}
+            >
+              <h5 className="text-dark fw-bold mb-3">Filter by Category</h5>
+              <div className="filter-scroll d-flex flex-lg-column flex-row gap-2">
+                {categories.map((c) => (
+                  <Checkbox
+                    key={c._id}
+                    onChange={(e) => handleFilter(e.target.checked, c._id)}
+                    className="text-secondary"
+                  >
+                    {c.name}
+                  </Checkbox>
                 ))}
-              </Radio.Group>
+              </div>
+
+              <h5 className="text-dark fw-bold mt-4 mb-3">Filter by Price</h5>
+              <div className="filter-scroll d-flex flex-lg-column flex-row gap-3">
+                <Radio.Group
+                  onChange={(e) => setRadio(e.target.value)}
+                  className="d-flex flex-lg-column flex-row gap-3"
+                >
+                  {price.map((p) => (
+                    <Radio
+                      key={p._id}
+                      value={p.array}
+                      className="text-secondary"
+                    >
+                      {p.name}
+                    </Radio>
+                  ))}
+                </Radio.Group>
+              </div>
 
               <button
-                className="btn btn-outline-danger w-100 mt-4 rounded-pill fw-semibold"
+                className="btn btn-gradient w-100 mt-4 rounded-pill fw-semibold"
                 onClick={() => window.location.reload()}
               >
                 Reset Filters
@@ -149,20 +172,21 @@ const Home = () => {
 
           {/* Products */}
           <div className="col-lg-9 col-md-8">
-            <h2 className="text-center fw-bold text-success mb-4">All Products</h2>
+            <h2 className="text-center fw-bold text-dark mb-4">
+              ✨ Featured Products ✨
+            </h2>
             <div className="row g-4">
               {products.map((p) => (
-                <div className="col-lg-4 col-md-6" key={p._id}>
-                  <div className="card border-0 shadow-sm rounded-4 h-100 product-card">
+                <div className="col-6 col-md-4 col-lg-4" key={p._id}>
+                  <div className="card border-0 shadow-sm rounded-4 h-100 product-card overflow-hidden">
                     <img
                       src={`${apiUrl}/product/get-image/${p._id}`}
                       alt={p.name}
-                      className="card-img-top rounded-top-4"
-                      style={{ height: "220px", objectFit: "cover" }}
+                      className="card-img-top product-img"
                     />
-                    <div className="card-body d-flex flex-column text-center bg-light">
+                    <div className="card-body d-flex flex-column text-center">
                       <h6 className="fw-bold text-dark">{p.name}</h6>
-                      <p className="text-primary fw-semibold mb-2">
+                      <p className="text-success fw-semibold mb-2">
                         {p.price.toLocaleString("en-IN", {
                           style: "currency",
                           currency: "INR",
@@ -170,20 +194,23 @@ const Home = () => {
                       </p>
                       <div className="mt-auto d-flex justify-content-center gap-2">
                         <button
-                          className="btn btn-outline-primary btn-sm rounded-pill px-3"
+                          className="btn btn-outline-dark btn-sm rounded-pill px-3"
                           onClick={() => navigate(`/product/${p.slug}`)}
                         >
-                          More Details
+                          View Details
                         </button>
                         <button
-                          className="btn btn-danger btn-sm rounded-pill px-3"
+                          className="btn btn-dark btn-sm rounded-pill px-3"
                           onClick={() => {
                             setCart([...cart, p]);
-                            localStorage.setItem("cart", JSON.stringify([...cart, p]));
+                            localStorage.setItem(
+                              "cart",
+                              JSON.stringify([...cart, p])
+                            );
                             toast.success("Item Added to Cart");
                           }}
                         >
-                          Add to Cart
+                          🛒 Add
                         </button>
                       </div>
                     </div>
@@ -196,7 +223,7 @@ const Home = () => {
             <div className="text-center my-5">
               {products.length < total && (
                 <button
-                  className="btn btn-outline-danger px-5 py-2 rounded-pill fw-semibold"
+                  className="btn btn-gradient px-5 py-2 rounded-pill fw-semibold"
                   onClick={() => setPage(page + 1)}
                 >
                   {loading ? (
@@ -214,16 +241,6 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Extra Styling */}
-      <style>{`
-        .product-card {
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .product-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
-      `}</style>
     </Layout>
   );
 };

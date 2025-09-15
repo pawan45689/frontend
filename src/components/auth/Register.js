@@ -5,7 +5,9 @@ import { useNavigate } from "react-router-dom";
 import Layout from "../layouts/Layout";
 import toast from "react-hot-toast";
 import "../css/register.css";
+
 const apiUrl = process.env.REACT_APP_API_URL;
+
 const Register = () => {
   const [username, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -18,7 +20,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${apiUrl}/api/v1/auth/register`, {
+      const res = await axios.post(`${apiUrl}/auth/register`, {
         username,
         email,
         phone,
@@ -27,7 +29,7 @@ const Register = () => {
         answer,
       });
       if (res) {
-        toast.success(res.data && res.data.message);
+        toast.success(res.data?.message);
         navigate("/login");
       } else {
         toast.success(res.data.message);
@@ -39,105 +41,95 @@ const Register = () => {
   };
 
   return (
-    <>
-      <Layout title="Register - Ecommer App">
-        <div className="container mt-5 mb-5 d-flex align-items-center justify-content-center">
-          <div className="row w-75 shadow-lg p-4 rounded bg-white">
-            <div className="col-md-6 d-flex flex-column align-items-center justify-content-center" >
-              <h1 className="text-center mb-4 text-black">Create an Account</h1>
-              <form onSubmit={handleSubmit} className="w-100">
-                <div className="form-group mb-3">
+    <Layout title="Register - Ecommer App">
+      <div className="container mt-5 mb-5">
+        <div className="row w-100 shadow-lg rounded bg-white overflow-hidden register-row">
+          {/* Image Section */}
+          <div className="col-md-6 register-image d-flex flex-column justify-content-center align-items-center text-white p-5">
+            <h2>Welcome to Ecommer!</h2>
+            <p>Create your account and enjoy seamless shopping experience.</p>
+            <img
+              src={signuppic}
+              alt="Signup"
+              className="img-fluid mt-3 rounded shadow-sm"
+            />
+          </div>
+          {/* Form Section */}
+          <div className="col-md-6 p-5 register-form">
+            <h1 className="text-center mb-4">Create an Account</h1>
+            <form onSubmit={handleSubmit}>
+              <div className="row">
+                <div className="col-md-6 mb-3">
                   <input
                     type="text"
-                    id="username"
-                    className="form-control border-black text-black"
+                    className="form-control"
+                    placeholder="Full Name"
                     value={username}
                     onChange={(e) => setName(e.target.value)}
                     required
-                    placeholder="Full Name"
-                 
                   />
                 </div>
-
-                <div className="form-group mb-3">
+                <div className="col-md-6 mb-3">
                   <input
                     type="email"
-                    id="email"
-                    className="form-control border-black"
+                    className="form-control"
+                    placeholder="Email Address"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    placeholder="Email Address"
-                  
                   />
                 </div>
-
-                <div className="form-group mb-3">
+                <div className="col-md-6 mb-3">
                   <input
                     type="text"
-                    id="phone"
-                    className="form-control border-black"
+                    className="form-control"
+                    placeholder="Phone Number"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     required
-                    placeholder="Phone Number"
-                  
                   />
                 </div>
-
-                <div className="form-group mb-3">
+                <div className="col-md-6 mb-3">
                   <input
                     type="password"
-                    id="password"
-                    className="form-control border-black"
+                    className="form-control"
+                    placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    placeholder="Password"
-                  
                   />
                 </div>
-
-                <div className="form-group mb-3">
+                <div className="col-12 mb-3">
                   <textarea
-                    id="address"
-                    className="form-control border-black"
+                    className="form-control"
+                    placeholder="Address"
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     rows="2"
                     required
-                    placeholder="Address......"
-                  
                   ></textarea>
                 </div>
-
-                <div className="form-group mb-4">
+                <div className="col-12 mb-4">
                   <textarea
-                    id="answer"
-                    className="form-control border-black"
+                    className="form-control"
+                    placeholder="Security Answer"
                     value={answer}
                     onChange={(e) => setAnswer(e.target.value)}
                     rows="2"
                     required
-                    placeholder="Security Answer....."
-                  
                   ></textarea>
                 </div>
-
-                <div className="text-center">
-                  <button type="submit" className="btn btn-primary  w-100">
+                <div className="col-12">
+                  <button type="submit" className="btn btn-primary w-100">
                     Register
                   </button>
                 </div>
-              </form>
-            </div>
-            <div className="col-md-6 d-flex align-items-center justify-content-center">
-              <img src={signuppic} alt="Signup" className="img-fluid rounded shadow-sm"  />
-            </div>
+              </div>
+            </form>
           </div>
         </div>
-      </Layout>
-    </>
+      </div>
+    </Layout>
   );
 };
 
