@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import UserMenu from "../../components/layouts/UserMenu";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+const apiUrl = process.env.REACT_APP_API_URL;
 const Profile = () => {
   const navigate = useNavigate();
   const [auth, setAuth] = useAuth();
@@ -27,7 +27,7 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.put("/api/v1/auth/profile", {
+      const { data } = await axios.put(`${apiUrl}/auth/profile`, {
         username,
         email,
         phone,

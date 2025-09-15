@@ -4,14 +4,14 @@ import Layout from "../../components/layouts/Layout";
 import axios from "axios";
 import { useAuth } from "../../context/auth";
 import moment from "moment";
-
+const apiUrl = process.env.REACT_APP_API_URL;
 const Order = () => {
   const [orders, setOrders] = useState([]);
   const [auth] = useAuth();
 
   const getOrders = async () => {
     try {
-      const { data } = await axios.get("/api/v1/auth/order");
+      const { data } = await axios.get( `${apiUrl}/auth/order`);
       setOrders(data);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -66,7 +66,7 @@ const Order = () => {
                       <div className="row mb-3 p-3 card flex-row" key={p._id}>
                         <div className="col-md-4">
                           <img
-                            src={`/api/v1/product/get-image/${p._id}`}
+                            src={`${apiUrl}/product/product/get-image/${p._id}`}
                             alt={p.name || "Product Image"}
                             className="rounded-lg object-cover border border-gray-300 img-fluid"
                           />
