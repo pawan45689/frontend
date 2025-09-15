@@ -14,7 +14,6 @@ const Profile = () => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-  
 
   useEffect(() => {
     const { email, username, phone, address } = auth?.user || {};
@@ -27,13 +26,24 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.put(`${apiUrl}/auth/profile`, {
-        username,
-        email,
-        phone,
-        address,
-        
-      });
+      // Get token from auth context (you already have useAuth) or localStorage
+      const token =
+        auth?.token || JSON.parse(localStorage.getItem("auth"))?.token;
+
+      const { data } = await axios.put(
+        `${apiUrl}/auth/profile`,
+        {
+          username,
+          email,
+          phone,
+          address,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        }
+      );
 
       if (data?.success) {
         setAuth({ ...auth, user: data?.updatedUser });
@@ -93,19 +103,16 @@ const Profile = () => {
                   />
                 </div>
 
-                
-                  <div className="mb-3">
-                    <label className="form-label fw-bold">Phone Number</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                
+                <div className="mb-3">
+                  <label className="form-label fw-bold">Phone Number</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    required
+                  />
+                </div>
 
                 <div className="mb-3">
                   <label className="form-label fw-bold">Address</label>
@@ -125,7 +132,6 @@ const Profile = () => {
               </form>
             </div>
           </div>
-
         </div>
       </div>
     </Layout>
